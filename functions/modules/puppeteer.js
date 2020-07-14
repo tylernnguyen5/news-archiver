@@ -5,7 +5,7 @@ module.exports.scrapeAndScreenshot = async function () {
 	const url = "https://www.cnn.com/";
 
 	const browser = await puppeteer.launch({
-			args: ["--no-sandbox", "--disable-setupid-sandbox"]
+		args: ["--no-sandbox", "--disable-setupid-sandbox"]
 	});
 
 	const page = await browser.newPage();

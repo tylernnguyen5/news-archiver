@@ -27,32 +27,36 @@ const db = admin.firestore();
 // ======================================================================================
 
 // Schedule cloud function (PubSub)
-exports.scheduledFunction = functions.pubsub
-  .schedule("*/15 * * * *") 	// Crontab: every 15mins
-  .onRun( (context) => {
-    console.log("This function will be run every 15 minutes!");
+exports.scheduledFunction = functions
+	.runWith({
+		timeoutSeconds: 300,
+		memory: '1GB'
+	}).pubsub
+	.schedule("*/15 * * * *") 	// Crontab: every 15mins
+  	.onRun( (context) => {
+		console.log("This function will be run every 15 minutes!");
 
-    // Get data from cnn collection in Firestore
-    getCNNData();
+		// Get data from cnn collection in Firestore
+		getCNNData();
 
-    let headlines = [], screenshot, filename;
+		let headlines = [], screenshot, filename;
 
-    // TRYME: Uncomment to add data with websrapping
-    // try {
-    //     headlines, screenshot = getHeadlines();
-    // } catch (err) {
-    //     console.log("Error when scrapping");
-    // }
-    // console.log("Headlines are being scraped");
+		// TRYME: Uncomment to add data with websrapping
+		// try {
+		//     headlines, screenshot = getHeadlines();
+		// } catch (err) {
+		//     console.log("Error when scrapping");
+		// }
+		// console.log("Headlines are being scraped");
 
-    // TRYME: Uncomment the variable below to test the scheduled function
-	headlines = [{
-		headline: "US carries out first federal execution in years",
-		url: "https://www.cnn.com/2020/07/14/politics/daniel-lewis-lee-supreme-court-rule-execution/index.html"
-	}];
+		// TRYME: Uncomment the variable below to test the scheduled function
+		headlines = [{
+			headline: "US carries out first federal execution in years",
+			url: "https://www.cnn.com/2020/07/14/politics/daniel-lewis-lee-supreme-court-rule-execution/index.html"
+		}];
 
-    headlines.forEach( value => addCNNData(value)); // Adding data to Firestore
-  });
+		headlines.forEach( value => addCNNData(value)); // Adding data to Firestore
+	});
 
 
 // ======================================================================================
@@ -60,8 +64,8 @@ exports.scheduledFunction = functions.pubsub
 // Firestore Implementation
 
 // Get data
+// CHECKME: This function can be used for front-end for retrieving data from 'cnn' collection in Firestore
 function getCNNData() {
-    // CHECKME: This function can be used for front-end for retrieving data from 'cnn' collection in Firestore
     db.collection('cnn').get()
         .then( (snapshot) => {
             snapshot.docs.forEach( doc => {
@@ -75,8 +79,8 @@ function getCNNData() {
 }
 
 // Add data
+// CHECKME: This function is for adding new documents into 'cnn' collections in Firestore 
 function addCNNData(value) {
-    // CHECKME: This function is for adding new documents into 'cnn' collections in Firestore 
     const data = {
         headline: value.headline,
         url: value.url,

@@ -2,7 +2,7 @@ const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 
 module.exports.scrapeAndScreenshot = async function () {
-	const url = "https://www.cnn.com/";
+	const url = "https://www.cnn.com";
 
 	const browser = await puppeteer.launch({
 		args: ["--no-sandbox", "--disable-setupid-sandbox"]
@@ -27,11 +27,15 @@ module.exports.scrapeAndScreenshot = async function () {
 	const $ = cheerio.load(html);
 	const headlines = [];
 
-	$("section#intl_homepage1-zone-1 > div > div > div > ul > li > article > div > div > h3 > a > span.cd__headline-text")
+	$("section#intl_homepage1-zone-1 > div > div > div > ul > li > article > div > div > h3 > a")
 	.each((index, element) => {
-		headline = $(element).text();
+		let href = $(element).attr("href");
+		let headline = $(element).find("span.cd__headline-text").text();
 
-		headlines.push(headline);
+		headlines.push({
+			headline: headline,
+			url: `${url}${href}`
+		});
 	});
 
 	// Screenshot
@@ -40,6 +44,7 @@ module.exports.scrapeAndScreenshot = async function () {
 	const screenshot = await page.screenshot();
 	const filename = `cnn-${datetime.toISOString()}.png`;
 
+	await page.close();
 	await browser.close();
 
 	return { headlines, screenshot, filename };

@@ -1,4 +1,5 @@
 const puppeteer = require("puppeteer");
+const cheerio = require("cheerio");
 
 let browserPromise = puppeteer.launch({
     headless: true,
@@ -10,9 +11,8 @@ module.exports.scrapeAndScreenshot = async function () {
     const url = "https://www.cnn.com";
 
     const browser = await browserPromise;
-    const context = await browser.createIncognitoBrowserContext();
 
-    const page = await context.newPage();
+    const page = await browser.newPage();
 
     await page.setViewport({
         // Standard viewport size
@@ -59,8 +59,7 @@ module.exports.scrapeAndScreenshot = async function () {
         filename: filename
     };
 
-    await context.close();
-    // await browser.close();
+    await browser.close();
 
-    return new Promise.resolve(data);
+    return Promise.resolve(data);
 }

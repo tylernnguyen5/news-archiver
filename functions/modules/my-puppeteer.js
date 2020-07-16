@@ -61,7 +61,7 @@ module.exports.scrapeAndScreenshot = async function () {
 	await context.close();
 	// await browser.close();
 
-	return new Promise.resolve(data); 
+	return Promise.resolve(data); 
 }
 
 // module.exports.screenshot = async () => {

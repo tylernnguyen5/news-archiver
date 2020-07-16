@@ -2,20 +2,17 @@ const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 
 let browserPromise = puppeteer.launch({
+	headless: true,
 	args: ["--no-sandbox", "--disable-setupid-sandbox"]
-}).catch(err => console.log("Error with launching puppeteer browser: " + err));
+}).catch(err => console.log("Error with launching Puppeteer browser: " + err));
 
 
 module.exports.scrapeAndScreenshot = async function () {
 	const url = "https://www.cnn.com";
 
-	// const browser = await puppeteer.launch({
-	// 	args: ["--no-sandbox", "--disable-setupid-sandbox"]
-	// });
 	const browser =  await browserPromise;
 	const context =  await browser.createIncognitoBrowserContext();
 
-	// const page = await browser.newPage();
 	const page = await context.newPage();
 
 	await page.setViewport({
@@ -26,12 +23,14 @@ module.exports.scrapeAndScreenshot = async function () {
 	});
 
 	// Navigate to url
-	await page.goto(url);
+	await page.goto(url, { waitUntil: 'networkidle2' });
 
 	// Wait for the page finishing loading
 	await page.evaluateHandle("document.fonts.ready");
 
 	// Scraping
+
+	// Headlines and URLs
 	const html = await page.content();
 	const $ = cheerio.load(html);
 	const headlines = [];
@@ -47,15 +46,38 @@ module.exports.scrapeAndScreenshot = async function () {
 		});
 	});
 
-	// Screenshot
+	// Screenshot and screenshot filename
 	const datetime = new Date();
 
 	const screenshot = await page.screenshot();
 	const filename = `cnn-${datetime.toISOString()}.png`;
 
-	// await page.close();
-	// await browser.close();
-	await context.close();
+	const data = {
+		headlines: headlines,
+		screenshot: screenshot,
+		filename: filename
+	};
 
-	return { headlines, screenshot, filename };
+	await context.close();
+	// await browser.close();
+
+	return new Promise.resolve(data); 
 }
+
+// module.exports.screenshot = async () => {
+// 	const url = "https://www.cnn.com";
+
+// 	const browser = await browserPromise;
+// 	const context = await browser.createIncognitoBrowserContext();
+
+// 	const page = await context.newPage();
+
+// 	await page.goto(url, { waitUntil: 'networkidle2' });
+
+// 	// Screenshot and screenshot filename
+// 	const screenshot = await page.screenshot();
+
+// 	await context.close();
+
+// 	return screenshot;
+// }

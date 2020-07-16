@@ -17,7 +17,6 @@ admin.initializeApp(firebaseConfig);
 
 const db = admin.firestore();
 
-
 // ======================================================================================
 
 // Puppeteer (custom module)

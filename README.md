@@ -14,6 +14,14 @@ The application involves an underlying **Scheduled Cloud Function** that is exec
 
 The source code also includes a client to view data written in **Vue.js**
 
+## Problems
+
+While working on the project, I encountered a problem where the Puppeteer cannot be correctly executed when running on Google Cloud Function due to the incompatibility betweenn the version of Puppeteer and Chromium on the Google Cloud Platform.
+
+*Notes: Read through some threads and decide to wait on the next release from Google*
+
+**Solution:** *Downgrading Puppeteer to v2.1.1 and run with Nodejs 10 engine for Google Cloud Function*
+
 ## Tech Stacks
 
 - Node.js

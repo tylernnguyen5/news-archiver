@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
-    "chromium": "^2.1.2",
     "firebase-admin": "^8.10.0",
     "firebase-functions": "^3.8.0",
     "puppeteer": "^5.1.0"

@@ -16,7 +16,9 @@ The source code also includes a client to view data written in **Vue.js**
 
 ---
 
-## Problems
+## Problems while working on the project
+
+### Puppeteer and Chromium on Google Cloud Function
 
 While working on the project, I encountered a problem where the Puppeteer cannot be correctly executed when running on Google Cloud Function due to **the incompatibility between the version of Puppeteer and Chromium on the Google Cloud Platform**.
 
@@ -36,16 +38,17 @@ Error with launching Puppeteer browser: TimeoutError: Timed out after 30000 ms w
 
 **Progress:**
 
-- *27th Jul 20: Testing Puppeteer locally with simple examples works (puppeteer@v5.2.1)*
+- *Testing Puppeteer locally with simple examples works (puppeteer@v5.2.1)*
+- *Some people said Puppeteer worked with Cloud Function with v2.1.0 / v1.14.0 / v3.0.4 / v1.9.0*
+- *Function worked with puppeteer@5.2.1 + Nodejs Engine 12 + No incognito context, but failed when handling screenshot*
+- *Puppeteer can be launched from Cloud Function, but no page content was retrieved*
+- **Resolved***Downgrade to Nodejs Engine 10 + puppeteer@5.2.1 + No incognito context + Removing [--'no-sandbox', '--disable-setuid-sandbox'] from launch configuration*
 
+## My TODOS
 
-## My Plan
-
-The issue may take a few weeks to be address if I want to use the Scheduled Cloud Function for Puppeteer implementation.
-
-Therefore, I will focus on implementing the client app with Vue.js on a different branch with dummy data in Firestore and Cloud Storage.
-
-By the time I complete the client app and I couldn't address the Scheduled Cloud Function problem, I would try implementing with a regular HTTP request Cloud Function
+- Implement Cloud Storage functions to add/retrieve data
+- Integrate Puppeteer with Cloud Storage function
+- Implement client app (Vue.js)
 
 ## Data Structure
 

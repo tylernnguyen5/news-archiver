@@ -8,6 +8,7 @@ let browserPromise = puppeteer.launch({
 
 
 module.exports.scrapeAndScreenshot = async function () {
+	console.log("Starting Puppeteer");
 	const url = "https://www.cnn.com";
 
 	const browser =  await browserPromise;
@@ -44,6 +45,7 @@ module.exports.scrapeAndScreenshot = async function () {
 			headline: headline,
 			url: `${url}${href}`
 		});
+		console.log("Scrapped 1 headline");
 	});
 
 	// Screenshot and screenshot filename
@@ -59,8 +61,8 @@ module.exports.scrapeAndScreenshot = async function () {
 	};
 
 	await context.close();
-	// await browser.close();
 
+	console.log("Ending Puppeteer");
 	return Promise.resolve(data); 
 }
 

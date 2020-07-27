@@ -1,5 +1,6 @@
 const functions = require('firebase-functions');
 
+// TODO: remove credential
 // Initializing variables
 const firebaseConfig = {
   apiKey: "AIzaSyB6MmX9-y2Qrw3Y7x_ADWAgOkbBNHTA1ac",
@@ -22,7 +23,7 @@ const db = admin.firestore();
 // Puppeteer (custom module)
 
 // const myPuppeteer = require("./modules/my-puppeteer.js");
-const myPuppeteer = require("./modules/puppeteer-no-incognito.js");
+const myPuppeteer = require("./modules/puppeteer-no-incognito.js"); // FIXME: delete old modules
 
 // ======================================================================================
 
@@ -35,39 +36,19 @@ exports.scheduledFunction = functions
   	.onRun( async (context) => {
 		console.log("This function will be run every 15 minutes!");
 
-		// Get data from cnn collection in Firestore
-		// getCNNData();
-
 		// Scrape with Puppeteer
-		// const data = {};
-		// myPuppeteer.scrapeAndScreenshot()
-		// 	.then(val => data = val)
-		// 	.catch(err => console.log('Error scraping data with Puppeteer'));
 		const data = await myPuppeteer.scrapeAndScreenshot();	
 
 		const { headlines, screenshot, filename } = data;
 
 		// Adding data to Firestore
-		headlines.forEach( value => addCNNData(value)); 
+        console.log("Adding data to Firestore");
+		headlines.forEach(value => addCNNData(value)); 
 
 		// Adding data to Cloud Storage
-
+        console.log("Adding data to Cloud Storage");
 
 	});
-
-// HTTP Cloud Function
-// exports.screenshotHTTP = functions.https.onRequest((req, res) => {
-// 	let screenshot;
-
-// 	try {
-// 		screenshot = myPuppeteer.screenshot();
-// 	}
-// 	catch (err) {
-// 		console.log("Error when screenshot-ing");
-// 	}
-	
-// 	res.send(screenshot);
-// });
 
 // ======================================================================================
 
@@ -101,7 +82,7 @@ function addCNNData(value) {
     db.collection("cnn")
 		.add(data)
 		.then(console.log("New data added"))
-		.catch((err) => console.log("Error getting documents from Firestore", err));
+		.catch(err => console.log("Error adding documents from Firestore", err));
 }
 
 // ======================================================================================

@@ -12,7 +12,7 @@ Therefore, I come up with an idea to develop an application that archives the ne
 
 The application involves an underlying **Scheduled Cloud Function** that is executed every 15 minutes and uses **Puppeteer** to scrape data from CNN News. In terms of data, the headlines and URLs are stored in **Firestore**, and the screenshots are stored in **Cloud Storage**. 
 
-The source code also includes a client to view data written in **Vue.js**
+The source code also includes a client app to view data written in **Vue.js**. I also plan to scale the application with an iOS app when I start learning Swift and Flutter in the future.
 
 ---
 

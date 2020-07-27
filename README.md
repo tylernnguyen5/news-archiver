@@ -42,7 +42,7 @@ Error with launching Puppeteer browser: TimeoutError: Timed out after 30000 ms w
 - *Some people said Puppeteer worked with Cloud Function with v2.1.0 / v1.14.0 / v3.0.4 / v1.9.0*
 - *Function worked with puppeteer@5.2.1 + Nodejs Engine 12 + No incognito context, but failed when handling screenshot*
 - *Puppeteer can be launched from Cloud Function, but no page content was retrieved*
-- **Resolved***Downgrade to Nodejs Engine 10 + puppeteer@5.2.1 + No incognito context + Removing [--'no-sandbox', '--disable-setuid-sandbox'] from launch configuration*
+- **RESOLVED:** *Downgraded to Nodejs Engine 10 + puppeteer@5.2.1 + No incognito context + Removing [--'no-sandbox', '--disable-setuid-sandbox'] from launch configuration*
 
 ## My TODOS
 

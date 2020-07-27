@@ -23,7 +23,7 @@ const db = admin.firestore();
 // Puppeteer (custom module)
 
 // const myPuppeteer = require("./modules/my-puppeteer.js");
-const myPuppeteer = require("./modules/puppeteer-no-incognito.js"); // FIXME: delete old modules
+const myPuppeteer = require("./modules/test-puppeteer.js"); // FIXME: delete old modules
 
 // ======================================================================================
 
@@ -33,19 +33,20 @@ exports.scheduledFunction = functions
 		timeoutSeconds: 540,
 		memory: '2GB' 
 	}).pubsub.schedule("*/15 * * * *") 	// Crontab: every 15mins
-  	.onRun( async (context) => {
+  	.onRun(async (context) => {
 		console.log("This function will be run every 15 minutes!");
 
 		// Scrape with Puppeteer
 		const data = await myPuppeteer.scrapeAndScreenshot();	
 
-		const { headlines, screenshot, filename } = data;
+		// FIXME: const { headlines, screenshot, filename } = data;
+		const headlines = data.headlines;
 
 		// Adding data to Firestore
         console.log("Adding data to Firestore");
-		headlines.forEach(value => addCNNData(value)); 
+		// headlines.forEach(value => addHeadlinesData(value));  // FIXME: uncomment me
 
-		// Adding data to Cloud Storage
+		// TODO: Adding data to Cloud Storage
         console.log("Adding data to Cloud Storage");
 
 	});
@@ -55,7 +56,7 @@ exports.scheduledFunction = functions
 // Firestore Implementation
 
 // Get data
-// CHECKME: This function can be used for front-end for retrieving data from 'cnn' collection in Firestore
+// TODO: This function can be used for front-end for retrieving data from 'cnn' collection in Firestore
 function getCNNData() {
     db.collection('cnn')
 		.get()
@@ -71,8 +72,8 @@ function getCNNData() {
 }
 
 // Add data
-// CHECKME: This function is for adding new documents into 'cnn' collections in Firestore 
-function addCNNData(value) {
+// TODO: This function is for adding new documents into 'cnn' collections in Firestore 
+function addHeadlinesData(value) {
     const data = {
         headline: value.headline,
         url: value.url,
@@ -89,9 +90,12 @@ function addCNNData(value) {
 
 // Cloud Storage Implementation
 
+// TODO: Upload screenshot
+function addScreenshotData(screenshot, filename) {
+    return null;
+}
 
-// Upload screenshot
-
-
-// Get screenshot
-
+// TODO: Get screenshot
+function getScreenshotData() {
+    return null;
+}

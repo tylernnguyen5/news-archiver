@@ -1,20 +1,13 @@
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 
-let browserPromise = puppeteer.launch({
-	headless: true,
-	args: ["--no-sandbox", "--disable-setupid-sandbox"]
-}).catch(err => console.log("Error with launching Puppeteer browser: " + err));
-
-
 module.exports.scrapeAndScreenshot = async function () {
 	console.log("Starting Puppeteer");
-	const url = "https://www.cnn.com";
+	const url = "https://edition.cnn.com/";
 
-	const browser =  await browserPromise;
-	const context =  await browser.createIncognitoBrowserContext();
+	const browser = await puppeteer.launch();
 
-	const page = await context.newPage();
+	const page = await browser.newPage();
 
 	await page.setViewport({
 		// Standard viewport size
@@ -24,10 +17,7 @@ module.exports.scrapeAndScreenshot = async function () {
 	});
 
 	// Navigate to url
-	await page.goto(url, { waitUntil: 'networkidle2' });
-
-	// Wait for the page finishing loading
-	await page.evaluateHandle("document.fonts.ready");
+	await page.goto(url, { waitUntil: "networkidle2" });
 
 	// Scraping
 
@@ -36,50 +26,45 @@ module.exports.scrapeAndScreenshot = async function () {
 	const $ = cheerio.load(html);
 	const headlines = [];
 
-	$("section#intl_homepage1-zone-1 > div > div > div > ul > li > article > div > div > h3 > a")
-	.each((index, element) => {
+	$(
+		"section#intl_homepage1-zone-1 > div > div > div > ul > li > article > div > div > h3 > a"
+	).each((index, element) => {
 		let href = $(element).attr("href");
 		let headline = $(element).find("span.cd__headline-text").text();
 
 		headlines.push({
-			headline: headline,
-			url: `${url}${href}`
+			headline,
+			url: `${url}${href}`,
 		});
 		console.log("Scrapped 1 headline");
 	});
 
-	// Screenshot and screenshot filename
-	const datetime = new Date();
+	// FIXME: Screenshot and screenshot filename
+	// const datetime = new Date()
+	// 	.toISOString()
+	// 	.replace("T", "--")
+	// 	.replace(/:/g, "-")
+	// 	.slice(0, -5);
 
-	const screenshot = await page.screenshot();
-	const filename = `cnn-${datetime.toISOString()}.png`;
+	// const filename = `cnn-${datetime}.png`;
 
+	// const screenshot = await page.screenshot({
+	// 	path: `./${filename}`,
+	// });
+
+	// FIXME: Return data
+	// const data = {
+	// 	headlines: headlines,
+	// 	screenshot: screenshot,
+	// 	filename: filename,
+	// };
 	const data = {
-		headlines: headlines,
-		screenshot: screenshot,
-		filename: filename
+		headlines,
 	};
 
-	await context.close();
+	await browser.close();
 
 	console.log("Ending Puppeteer");
-	return Promise.resolve(data); 
-}
 
-// module.exports.screenshot = async () => {
-// 	const url = "https://www.cnn.com";
-
-// 	const browser = await browserPromise;
-// 	const context = await browser.createIncognitoBrowserContext();
-
-// 	const page = await context.newPage();
-
-// 	await page.goto(url, { waitUntil: 'networkidle2' });
-
-// 	// Screenshot and screenshot filename
-// 	const screenshot = await page.screenshot();
-
-// 	await context.close();
-
-// 	return screenshot;
-// }
+	return data;
+};

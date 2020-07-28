@@ -1,5 +1,6 @@
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
+const fs = require("fs")
 
 
 module.exports.scrapeAndScreenshot = async function () {
@@ -36,22 +37,30 @@ module.exports.scrapeAndScreenshot = async function () {
                 headline,
                 url: `${url}${href}`,
             });
-            console.log("Scrapped 1 headline");
         });
     
 
-	// FIXME: Screenshot and screenshot filename
-	// const datetime = new Date()
-	// 	.toISOString()
-	// 	.replace("T", "--")
-	// 	.replace(/:/g, "-")
-	// 	.slice(0, -5);
+	// Screenshot and screenshot filename
+	
+	// Create screenshots dir
+	fs.mkdir("/tmp/screenshots", (err) => {
+		if (err) return console.error(err);
+		console.log('Directory created successfully!');
+	}); 
 
-	// const filename = `cnn-${datetime}.png`;
+	// Take screenshot(s)
+	const datetime = new Date()
+		.toISOString()
+		.replace("T", "--")
+		.replace(/:/g, "-")
+		.slice(0, -5);
 
-    // const screenshot = await page.screenshot({
-	// 	path: `./${filename}`,
-	// });
+	const filename = `cnn-${datetime}.png`;
+
+    await page.screenshot({
+		path: `/tmp/screenshots/${filename}`
+	}).catch(err => console.log(err));
+	console.log('Took screenshot(s)')	// FIXME: remove logging
 
     // FIXME: Return data
 	// const data = {

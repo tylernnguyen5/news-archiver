@@ -44,9 +44,21 @@ Error with launching Puppeteer browser: TimeoutError: Timed out after 30000 ms w
 - *Puppeteer can be launched from Cloud Function, but no page content was retrieved*
 - **RESOLVED:** *Downgraded to Nodejs Engine 10 + puppeteer@5.2.1 + No incognito context + Removing [--'no-sandbox', '--disable-setuid-sandbox'] from launch configuration*
 
+### Saving screenshots
+
+My initial approach was to create a `screenshots` directory, but after a few deployments, I found out that the only one directory that is writable by my code is the `/tmp` directory. 
+
+Therefore, I decided to create the `screenshots` in `/tmp` to store my screenshot(s) and delete them after uploading to Cloud Storage to save memory usage in Cloud Functions runtime
+
+### 
+
+
+---
+
 ## My TODOS
 
-- Implement Cloud Storage functions to add/retrieve data
+- Write rmdir. If cannot, remove screenshots dir implementation altogether
+- Implement Cloud Storage functions: Upload w/ admin.storage().bucket()
 - Integrate Puppeteer with Cloud Storage function
 - Implement client app (Vue.js)
 

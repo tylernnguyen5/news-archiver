@@ -17,6 +17,7 @@ const admin = require("firebase-admin");
 admin.initializeApp(firebaseConfig);
 
 const db = admin.firestore();
+const bucket = admin.storage().bucket();
 
 // ======================================================================================
 
@@ -48,6 +49,7 @@ exports.scheduledFunction = functions
 
 		// TODO: Adding data to Cloud Storage
         console.log("Adding data to Cloud Storage");
+        addScreenshotData();
 
 	});
 
@@ -72,7 +74,7 @@ function getCNNData() {
 }
 
 // Add data
-// TODO: This function is for adding new documents into 'cnn' collections in Firestore 
+// This function is for adding new documents into 'cnn' collections in Firestore 
 function addHeadlinesData(value) {
     const data = {
         headline: value.headline,
@@ -90,9 +92,33 @@ function addHeadlinesData(value) {
 
 // Cloud Storage Implementation
 
+const fs = require('fs');
+
 // TODO: Upload screenshot
-function addScreenshotData(screenshot, filename) {
-    return null;
+function addScreenshotData() {
+    // TODO: upload screenshot(s) // FIXME:
+    console.log("Checkpoint 1")
+    // fs.readdir('/tmp/screenshots', (err, data) => {
+	// 	if (err) throw err;
+
+
+	// });
+
+    // TODO: delete file(s) after uploading
+    console.log("Checkpoint 2")
+    fs.rmdir(
+		'/tmp/screenshots',
+		{
+			recursive: false,
+		},
+		(error) => {
+			if (error) {
+				console.log(error);
+			} else {
+				console.log('Non Recursive: Directories Deleted!');
+			}
+		}
+	); 
 }
 
 // TODO: Get screenshot

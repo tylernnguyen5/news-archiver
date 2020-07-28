@@ -98,27 +98,21 @@ const fs = require('fs');
 function addScreenshotData() {
     // TODO: upload screenshot(s) // FIXME:
     console.log("Checkpoint 1")
-    // fs.readdir('/tmp/screenshots', (err, data) => {
-	// 	if (err) throw err;
+    fs.readdir('/tmp/screenshots', (err, files) => {
+		if (err) throw err;
 
-
-	// });
+        files.forEach(file => console.log(file))
+	});
 
     // TODO: delete file(s) after uploading
-    console.log("Checkpoint 2")
-    fs.rmdir(
-		'/tmp/screenshots',
-		{
-			recursive: false,
-		},
-		(error) => {
-			if (error) {
-				console.log(error);
-			} else {
-				console.log('Non Recursive: Directories Deleted!');
-			}
-		}
-	); 
+    // console.log("Checkpoint 2")
+    // fs.rmdir(
+	// 	'/tmp/screenshots',
+	// 	{
+	// 		recursive: false,
+	// 	},
+	// 	() => console.log('Non Recursive: Directories Deleted!')
+	// ); 
 }
 
 // TODO: Get screenshot

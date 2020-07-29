@@ -1,5 +1,3 @@
-const functions = require('firebase-functions');
-
 // TODO: remove credential
 // Initializing variables
 const firebaseConfig = {
@@ -16,8 +14,11 @@ const firebaseConfig = {
 const admin = require("firebase-admin");
 admin.initializeApp(firebaseConfig);
 
+const functions = require("firebase-functions");
 const db = admin.firestore();
 const bucket = admin.storage().bucket();
+
+const fs = require("fs");
 
 // ======================================================================================
 
@@ -41,7 +42,7 @@ exports.scheduledFunction = functions
 		const data = await myPuppeteer.scrapeAndScreenshot();	
 
 		// FIXME: const { headlines, screenshot, filename } = data;
-		const headlines = data.headlines;
+		const { headlines, filename } = data;
 
 		// Adding data to Firestore
         console.log("Adding data to Firestore");
@@ -49,7 +50,7 @@ exports.scheduledFunction = functions
 
 		// TODO: Adding data to Cloud Storage
         console.log("Adding data to Cloud Storage");
-        addScreenshotData();
+        addScreenshotData(filename);
 
 	});
 
@@ -73,7 +74,7 @@ function getCNNData() {
         .catch(err => console.log('Error getting documents from Firestore', err));
 }
 
-// Add data
+// Add data 
 // This function is for adding new documents into 'cnn' collections in Firestore 
 function addHeadlinesData(value) {
     const data = {
@@ -92,27 +93,29 @@ function addHeadlinesData(value) {
 
 // Cloud Storage Implementation
 
-const fs = require('fs');
+// Upload screenshot
+async function addScreenshotData(filename) {
+    await bucket.upload(`/tmp/screenshots/${filename}`, 
+        { destination: `screenshots/cnn/${filename}`}, 
+        (err, file) => {
+            if (err) throw err;
+            else {
+                console.log(`New file uploaded: ${file.name}`);
 
-// TODO: Upload screenshot
-function addScreenshotData() {
-    // TODO: upload screenshot(s) // FIXME:
-    console.log("Checkpoint 1")
-    fs.readdir('/tmp/screenshots', (err, files) => {
-		if (err) throw err;
+                // Remove file
+                fs.unlink(`/tmp/screenshots/${filename}`, () => console.log(`File removed: ${filename}`));
+            }    
+        });
 
-        files.forEach(file => console.log(file))
-	});
-
-    // TODO: delete file(s) after uploading
-    // console.log("Checkpoint 2")
-    // fs.rmdir(
-	// 	'/tmp/screenshots',
-	// 	{
-	// 		recursive: false,
-	// 	},
-	// 	() => console.log('Non Recursive: Directories Deleted!')
-	// ); 
+    // FIXME: remove 
+    // Function to get current filenames 
+    // in directory 
+    function getCurrentFilenames() {
+        console.log("\nCurrent filenames:");
+        fs.readdirSync('/tmp/screenshots').forEach(file => {
+            console.log(file);
+        });
+    } 
 }
 
 // TODO: Get screenshot

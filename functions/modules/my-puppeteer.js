@@ -1,5 +1,6 @@
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
+const fs = require("fs");
 
 module.exports.scrapeAndScreenshot = async function () {
 	console.log("Starting Puppeteer");
@@ -19,6 +20,9 @@ module.exports.scrapeAndScreenshot = async function () {
 	// Navigate to url
 	await page.goto(url, { waitUntil: "networkidle2" });
 
+	// Wait for the page finishing loading
+	await page.evaluateHandle("document.fonts.ready");
+
 	// Scraping
 
 	// Headlines and URLs
@@ -36,30 +40,37 @@ module.exports.scrapeAndScreenshot = async function () {
 			headline,
 			url: `${url}${href}`,
 		});
-		console.log("Scrapped 1 headline");
 	});
 
-	// FIXME: Screenshot and screenshot filename
-	// const datetime = new Date()
-	// 	.toISOString()
-	// 	.replace("T", "--")
-	// 	.replace(/:/g, "-")
-	// 	.slice(0, -5);
+	// Screenshot
 
-	// const filename = `cnn-${datetime}.png`;
+	// Create 'screenshots' dir
+	fs.mkdir("/tmp/screenshots", (err) => {
+		if (err) return console.error(err);
+		console.log("Directory created successfully!");
+	});
 
-	// const screenshot = await page.screenshot({
-	// 	path: `./${filename}`,
-	// });
+	// Take screenshot(s)
+	const datetime = new Date()
+		.toISOString()
+		.replace("T", "--")
+		.replace(/:/g, "-")
+		.slice(0, -5);
+
+	const filename = `cnn-${datetime}.jpeg`;
+
+	await page
+		.screenshot({
+			path: `/tmp/screenshots/${filename}`,
+			type: "jpeg",
+		})
+		.catch((err) => console.log(err));
+	console.log("Took screenshot(s)"); // FIXME: remove logging
 
 	// FIXME: Return data
-	// const data = {
-	// 	headlines: headlines,
-	// 	screenshot: screenshot,
-	// 	filename: filename,
-	// };
 	const data = {
 		headlines,
+		filename,
 	};
 
 	await browser.close();

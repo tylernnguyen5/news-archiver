@@ -21,6 +21,9 @@ module.exports.scrapeAndScreenshot = async function () {
 	// Navigate to url
 	await page.goto(url, { waitUntil: "networkidle2" });
 
+	// Wait for the page finishing loading
+	await page.evaluateHandle('document.fonts.ready');
+
 	// Scraping
 
 	// Headlines and URLs
@@ -40,9 +43,9 @@ module.exports.scrapeAndScreenshot = async function () {
         });
     
 
-	// Screenshot and screenshot filename
+	// Screenshot
 	
-	// Create screenshots dir
+	// Create 'screenshots' dir
 	fs.mkdir("/tmp/screenshots", (err) => {
 		if (err) return console.error(err);
 		console.log('Directory created successfully!');
@@ -55,21 +58,18 @@ module.exports.scrapeAndScreenshot = async function () {
 		.replace(/:/g, "-")
 		.slice(0, -5);
 
-	const filename = `cnn-${datetime}.png`;
+	const filename = `cnn-${datetime}.jpeg`;
 
     await page.screenshot({
-		path: `/tmp/screenshots/${filename}`
+		path: `/tmp/screenshots/${filename}`,
+		type: 'jpeg'
 	}).catch(err => console.log(err));
 	console.log('Took screenshot(s)')	// FIXME: remove logging
 
     // FIXME: Return data
-	// const data = {
-	// 	headlines,
-	// 	screenshot,
-	// 	filename,
-	// };
 	const data = {
-		headlines
+		headlines,
+		filename
 	};
 
 	await browser.close();

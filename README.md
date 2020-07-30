@@ -20,8 +20,9 @@ The source code also includes a client app to view data written in **Vue.js**. I
 
 ## My TODOS
 
-- Integrate Puppeteer with Cloud Storage function
-- Implement client app (Vue.js)
+- Implement client app (Vue.js) 
+
+*(I'm current working on it in a different repository and will merge them later)*
 
 ## Data Structure
 

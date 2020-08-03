@@ -22,7 +22,7 @@ The source code also includes a client app to view data written in **Vue.js**. I
 
 - Implement client app (Vue.js) 
 
-*(I'm current working on it in a different repository and will merge them later)*
+*(I'm current working on it in a different repository and will merge them later. It can be view ![here](https://github.com/tylernnguyen5/news-archiver-vue))*
 
 ## Data Structure
 
